@@ -176,7 +176,7 @@ uv run mypy src/ # 目录下的文件检查
 uv run mypy .    # 检查整个项目
 ```
 
-## Anki 卡片建议
+## Anki 卡片
 ```python
 Q: Python 中 Optional[T] 等价于什么？
 A: T | None (3.10+)
