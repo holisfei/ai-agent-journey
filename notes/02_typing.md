@@ -177,6 +177,7 @@ uv run mypy .    # 检查整个项目
 ```
 
 ## Anki 卡片
+
 ```python
 Q: Python 中 Optional[T] 等价于什么？
 A: T | None (3.10+)
