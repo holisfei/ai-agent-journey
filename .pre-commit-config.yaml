@@ -1,0 +1,24 @@
+repos:
+  # 一些通用检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace        # 去除行尾空格
+      - id: end-of-file-fixer           # 文件末尾确保换行
+      - id: check-yaml                  # 检查 YAML 语法
+      - id: check-added-large-files     # 拒绝超大文件
+      - id: check-merge-conflict        # 检查合并冲突标记
+
+  # ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # mypy（可选，初学者可以先不加）
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.13.0
+  #   hooks:
+  #     - id: mypy
