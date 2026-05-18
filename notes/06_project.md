@@ -138,6 +138,7 @@ uv run python src/async_crawler/cli.py fetch --help
 uv run python src/async_crawler/cli.py fetch https://xxx.com -c 10 -v
 uv run python src/async_crawler/cli.py version
 ```
+### 把 CLI 注册成全局命令
 
 在 pyproject.toml 里加：
 ```toml
