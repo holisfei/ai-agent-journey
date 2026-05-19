@@ -2,7 +2,7 @@ import pytest
 
 from async_crawler.parser import parse_html
 
-# ========== 测试 输入 数据 - 可以是各种数据 ==========
+# 输入数据来自conftest.py，不需要导入，输入参数直接使用
 
 full_html_str = """
     <html>
@@ -18,25 +18,11 @@ full_html_str = """
         <p>Some text here.</p>
       </body>
     </html>
-    """
-
-
-@pytest.fixture
-def full_html() -> str:
-    """一个完整的、字段齐全的 HTML"""
-    return full_html_str
-
-
-minimal_html_str = """
-<html><body></body></html>
 """
 
-
-@pytest.fixture
-def minimal_html() -> str:
-    """一个极简 HTML，几乎什么都没有"""
-    return minimal_html_str
-
+link_html_nohref_str = """
+    <html><body><a>no href</a><a href="/x">yes</a></body></html>
+"""
 
 nested_html_str = """
     <html>
@@ -46,14 +32,7 @@ nested_html_str = """
             </div>
         </body>
     </html>
-    """
-
-
-@pytest.fixture
-def nested_html() -> str:
-    """一个嵌套的 HTML"""
-    return nested_html_str
-
+"""
 
 # ========== 测试 用例 -> 测试各个场景 ==========
 
@@ -63,18 +42,23 @@ def nested_html() -> str:
 class TestExtractTitle:
     """title 标签的测试"""
 
-    def test_extracts_title(self, full_html):
-        result = parse_html(html=full_html)
-        assert result.title == "Test Page"
+    @pytest.mark.parametrize(
+        "input_html, result_title",
+        [
+            pytest.param(full_html_str, "Test Page"),
+            pytest.param(
+                "<html><head><title>  Spaced Title  </title></head><body></body></html>",
+                "Spaced Title",
+            ),
+        ],
+    )
+    def test_extracts_title(self, input_html, result_title):
+        result = parse_html(html=input_html)
+        assert result.title == result_title
 
     def test_returns_none_when_no_title(self, minimal_html):
         result = parse_html(minimal_html)
         assert result.title is None
-
-    def test_strips_whitespace_from_title(self):
-        html = "<html><head><title>  Spaced Title  </title></head><body></body></html>"
-        result = parse_html(html)
-        assert result.title == "Spaced Title"
 
 
 # Description 测试用例
@@ -114,10 +98,6 @@ class TestExtractHeadings:
 
 # a 标签测试用例
 
-link_html_nohref_str = """
-<html><body><a>no href</a><a href="/x">yes</a></body></html>
-"""
-
 
 class TestExtractLinks:
     """links 字段的测试"""
@@ -145,6 +125,8 @@ class TestExtractLinks:
 
 
 # a标签使用 pytest参数化定义用例
+
+
 LINKS_CASE = [
     pytest.param(full_html_str, "About", id="test_extracts_all_links_with_href"),
     pytest.param(link_html_nohref_str, "yes", id="test_skips_links_without_href"),

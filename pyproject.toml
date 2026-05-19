@@ -68,3 +68,18 @@ strict = true
 # pytest
 [tool.pytest.ini_options]
 asyncio_mode = "auto"           # 所有 async def 测试自动用 asyncio 跑
+
+# 测试覆盖率指定
+[tool.coverage.run]
+source = ["src/async_crawler"]         # 指定覆盖目录
+omit = ["*/tests/*", "*/_try*.py", "*/cli.py"]    # 排除测试文件本身和临时调试脚本
+
+# 测试覆盖率报告
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+show_missing = true                      # 默认显示 missing
+fail_under = 70                          # 覆盖率低于 80% 时 pytest 失败

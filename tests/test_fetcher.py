@@ -1,4 +1,7 @@
+from unittest.mock import patch
+
 import httpx
+import pytest
 from pytest_httpx import HTTPXMock
 
 from async_crawler.fetcher import fetch_many, fetch_one
@@ -7,6 +10,7 @@ from async_crawler.models import FetchStatus
 
 class TestFetchOne:
     async def test_one_success(self, httpx_mock: HTTPXMock):
+        """单个 抓取 成功"""
         html = "<html><head><title>Test</title></head><body><h1>Hi</h1></body></html>"
         url = "https://example.com"
         httpx_mock.add_response(url=url, status_code=200, text=html)
@@ -22,55 +26,72 @@ class TestFetchOne:
         assert "Hi" in result.content.headings
         assert result.elapsed_ms > 0
 
-    async def test_one_404(self, httpx_mock: HTTPXMock):
+    # 使用 parametrize 参数化各个场景
+    @pytest.mark.parametrize("status_code", [401, 403, 404, 501, 502, 503])
+    async def test_one_error_code(self, httpx_mock: HTTPXMock, status_code):
+        """单个 抓取失败：4xx、5xx场景"""
+
         url = "https://example.com/missing"
         httpx_mock.add_response(
             url=url,
-            status_code=404,
+            status_code=status_code,
             text="Not Found",
         )
 
         async with httpx.AsyncClient() as client:
-            result = await fetch_one(url=url, client=client)
-
-        assert result.status == FetchStatus.HTTP_ERROR
-        assert result.http_code == 404
-        assert result.content is None
-
-    async def test_one_500(self, httpx_mock: HTTPXMock):
-        """5xx 响应也归类为 HTTP_ERROR"""
-
-        url = "https://example.com/oops"
-        httpx_mock.add_response(url=url, status_code=500)
-
-        async with httpx.AsyncClient() as client:
             result = await fetch_one(client=client, url=url)
 
         assert result.status == FetchStatus.HTTP_ERROR
-        assert result.http_code == 500
+        assert result.http_code == status_code
+        assert result.content is None
 
-    async def test_one_timeout(self, httpx_mock: HTTPXMock):
-        """超时应该被分类为 TIMEOUT"""
+    @pytest.mark.parametrize(
+        "exception, status, error",
+        [
+            (httpx.TimeoutException("timed out"), FetchStatus.TIMEOUT, "timed out"),
+            (
+                httpx.ConnectError("connection refused"),
+                FetchStatus.NETWORK_ERROR,
+                "connection refused",
+            ),
+            (httpx.HTTPError("http error"), FetchStatus.HTTP_ERROR, "http_error"),
+        ],
+    )
+    async def test_one_error_connect(self, httpx_mock: HTTPXMock, exception, status, error):
+        """单个 抓取失败：超时、网络连接错误"""
+
         url = "https://example.com"
-        httpx_mock.add_exception(exception=httpx.TimeoutException("timed out"), url=url)
+        httpx_mock.add_exception(exception=exception, url=url)
 
         async with httpx.AsyncClient() as client:
             result = await fetch_one(client=client, url=url)
 
-        assert result.status == FetchStatus.TIMEOUT
+        assert result.status == status
         assert result.content is None
-        assert "timed out" in result.error.lower()
+        assert error in result.error.lower()
 
-    async def test_one_connection_error(self, httpx_mock: HTTPXMock):
-        """连接错误应该被分类为 NETWORK_ERROR"""
+    # @patch mock了某个函数 async_crawler/fetcher/parse_html函数
+    # patch的路径是使用这个函数的路径：fetcher/parse_html函数, parse_html函数在fetcher.py使用了
+    @patch("async_crawler.fetcher.parse_html")
+    async def test_one_parse_error(self, mock_parse, httpx_mock):
+        """单个 抓取成功，解析失败"""
+
+        mock_parse.side_effect = ValueError("simulated parse failure")
+
+        html = "<html><head><title>Test</title></head><body><h1>Hi</h1></body></html>"
         url = "https://example.com"
-        httpx_mock.add_exception(exception=httpx.ConnectError("connection refused"), url=url)
+        httpx_mock.add_response(url=url, status_code=200, text=html)
 
         async with httpx.AsyncClient() as client:
             result = await fetch_one(client=client, url=url)
 
-        assert result.status == FetchStatus.NETWORK_ERROR
+        assert result.status == FetchStatus.PARSE_ERROR
+        assert result.url == url
+        assert result.http_code == 200
         assert result.content is None
+
+        # 验证 mock的函数 被调用了1次
+        mock_parse.assert_called_once()
 
 
 class TestFetchMany:

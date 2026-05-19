@@ -60,6 +60,8 @@ def test_one_plus_one():
 
 运行测试: ```uv run pytest -v```
 
+运行单个测试：```uv run pytest tests/test_fetcher.py::TestFetchOneParseError -v```
+
 ### 带测试覆盖率测试
 
 添加依赖： ```uv add --dev pytest-cov```
