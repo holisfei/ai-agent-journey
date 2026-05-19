@@ -58,7 +58,7 @@ def test_one_plus_one():
     assert 1 + 1 == 2
 ```
 
-运行测试: ```uv run pytest```
+运行测试: ```uv run pytest -v```
 
 ### 带测试覆盖率测试
 
@@ -186,7 +186,7 @@ def _parse_length(tree: HTMLParser) -> int:
     return len(body.text().strip()) if body else 0
 ```
 
-测试公里逻辑：
+测试用例逻辑：
 ```py
 import pytest
 from async_crawler.parser import parse_html
@@ -304,6 +304,17 @@ class TestExtractLinks:
         result = parse_html(nested_html)
         assert result.links[0].url == "/about"
         assert result.links[0].text == "About"
+
+# a标签使用 pytest参数化定义用例
+LINKS_CASE = [
+    pytest.param(full_html_str, "About", id="test_extracts_all_links_with_href"),
+    pytest.param(link_html_nohref_str, "yes", id="test_skips_links_without_href"),
+    pytest.param(nested_html_str, "About", id="test_nested_with_links")
+]
+@pytest.mark.parametrize("html, expected", LINKS_CASE)
+def test_extract_Links(html, expected):
+    result = parse_html(html)
+    assert result.links[0].text == expected
 ```
 
 # Anki 卡片

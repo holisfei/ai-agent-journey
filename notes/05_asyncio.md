@@ -72,7 +72,7 @@ print(f"耗时{time.perf_counter() - start}s") # 3s
 - 结果统一返回：等所有任务都执行完成之后，将每个协程函数的返回值包装进 list 返回
     - list 结果的顺序就是任务加入时候的顺序
 - 某一个任务失败，其余任务继续执行，但是拿不到执行结果
-    - return_exceptions = True，失败的任务作为普通返回值返回，而不是不返回
+    - return_exceptions = True，表示失败的任务作为普通返回值返回，而不是不返回，结果需要手动遍历去哪个成功哪个失败
 
 ```python
 async def gather_cook():
@@ -103,7 +103,7 @@ asyncio.run(completed_cook())
 
 ### asyncio.TaskGroup 某一个任务失败 取消所有
 
-```TaskGroup```组织的任务和```gather```比，区别有：
+采用了“结构化并发”的理念，```TaskGroup```组织的任务和```gather```比，区别有：
 - 只要有一个任务失败，那所有的任务都会取消，终结所有任务
 - 资源清理保证：通过 ```async with``` 上下文，所有任务一定被妥善处理
 - 错误聚合：多个错误用 ```ExceptionGroup``` 统一抛出（Python 3.11+ 新特性）
@@ -116,7 +116,7 @@ async def group_cook():
         task1 = tg.create_task(cut_vegetables())
         task2 = tg.create_task(boil_water())
         task3 = tg.create_task(fail_task()) # 任务失败，取消所有
-        
+
         result1 = await task1
         result2 = await task2
         result3 = await task3
@@ -124,7 +124,7 @@ async def group_cook():
         print(f"group_cook 结果{result1}")
         print(f"group_cook 结果{result2}")
         print(f"group_cook 结果{result3}")
-asyncio.run(group_cook())  
+asyncio.run(group_cook())
 ```
 
 ### asyncio.wait_for 超时控制
@@ -219,7 +219,7 @@ async def main():
     status = await fetch_url("https://www.example.com")
     print(f"网站状态码: {status}")
 
-asyncio.run(main()) 
+asyncio.run(main())
 ```
 
 # httpx
@@ -232,14 +232,14 @@ headers = {
 }
 # 连接10s超时，读取数据15s超时，写数据30s超时，pool连接池60s超时
 timeout = httpx.Timeout(
-    connect=10, 
-    read=15, 
+    connect=10,
+    read=15,
     write=30,
     pool=60
 )
 # 最大连接数是100，其中保活连接最大20
 limit = httpx.Limits(
-    max_connections=100, 
+    max_connections=100,
     max_keepalive_connections=20
 )
 
@@ -247,15 +247,15 @@ limit = httpx.Limits(
 
 # AsyncClient为异步client
 client = httpx.AsyncClient(
-    timeout=timeout, 
-    limits=limit, 
+    timeout=timeout,
+    limits=limit,
     headers=headers
 )
 
 # 同步client
 client_sync = httpx.Client(
-    timeout=timeout, 
-    limits=limit, 
+    timeout=timeout,
+    limits=limit,
     headers=headers
 )
 
@@ -266,7 +266,7 @@ res = await client.get(url)
 async with client.stream("GET", url) as resp:
         async for chunk in resp.aiter_text():
                 print(chunk, end="", flush=True)
-    
+
 ```
 
 对于简单的普通请求可以不用async with来自动管理上下文的连接池，但是对于流式请求必须使用async with来自动管理来释放连接池
@@ -296,7 +296,7 @@ logger.add("logs/2026/app_{time}.log", rotation="00:00", retention="7 days", enc
 ### 异常捕获
 ```py
 # 自动捕获异常
-@logger.catch 
+@logger.catch
 def divid(x:int, y:int):
     x/y
 # 发生异常时，会自动捕获并记录完整的堆栈和变量值
@@ -321,7 +321,7 @@ async def main():
 
     start = time.perf_counter()
     await gather_cook()
-    print(f"gather_cook耗时{time.perf_counter() - start}s") 
+    print(f"gather_cook耗时{time.perf_counter() - start}s")
 
     await completed_cook()
 
@@ -358,7 +358,7 @@ async def request_task(url: str) -> dict:
             return {"url":url, "satus":"http_error", "code":res.status_code}
 
 async def request_group(urls:list) -> dict:
-    results: dict = {} 
+    results: dict = {}
     # 异步上下文，使用 asyncio.TaskGroup() 来组织并发协程任务
     async with asyncio.TaskGroup() as tg:
         for url in urls:
