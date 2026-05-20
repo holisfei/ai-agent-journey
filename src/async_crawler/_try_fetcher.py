@@ -14,7 +14,7 @@ async def main():
     ]
     results = await fetch_many(urls=urls)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"完成 {len(results)} 个,统计:")
 
     from collections import Counter

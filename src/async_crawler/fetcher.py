@@ -10,7 +10,7 @@ from async_crawler.parser import parse_html
 
 
 # 请求单个url的内容
-async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
+async def fetch_one(client: httpx.AsyncClient, url: str, verbose: bool) -> PageResult:
     """
     抓单个 URL,并解析 HTML 为结构化内容。
     任何异常都被捕获,转换为带状态的 PageResult。
@@ -24,7 +24,8 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
     try:
         response = await client.get(url=url, follow_redirects=True)
     except httpx.TimeoutException as e:  # 超时错误，
-        logger.warning(f"超时:{url} 耗时:{time.perf_counter()-start:.2f}s")
+        if verbose:
+            logger.warning(f"超时:{url} 耗时:{time.perf_counter() - start:.2f}s")
         return PageResult(
             url=url,
             status=FetchStatus.TIMEOUT,
@@ -32,7 +33,8 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
             error=f"timeout {str(e)}",
         )
     except httpx.ConnectError as e:  # 网络连接错误
-        logger.warning(f"连接错误:{url} 耗时:{time.perf_counter()-start:.2f}s 报错:{e}")
+        if verbose:
+            logger.warning(f"连接错误:{url} 耗时:{time.perf_counter() - start:.2f}s 报错:{e}")
         return PageResult(
             url=url,
             status=FetchStatus.NETWORK_ERROR,
@@ -40,7 +42,8 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
             error=f"connect_error {str(e)}",
         )
     except httpx.HTTPError as e:  # 其他未知错误
-        logger.warning(f"http错误:{url} 耗时:{time.perf_counter()-start:.2f}s 报错:{e}")
+        if verbose:
+            logger.warning(f"http错误:{url} 耗时:{time.perf_counter() - start:.2f}s 报错:{e}")
         return PageResult(
             url=url,
             status=FetchStatus.HTTP_ERROR,
@@ -50,9 +53,10 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
 
     # 非200错误
     if response.status_code != 200:  # 4xx 5xx
-        logger.warning(
-            f"code错误，{url}, code:{response.status_code}, 耗时:{time.perf_counter()-start:.2f}"
-        )
+        if verbose:
+            logger.warning(
+                f"code错误，{url}, code:{response.status_code}, 耗时:{time.perf_counter() - start:.2f}"
+            )
         return PageResult(
             url=url,
             status=FetchStatus.HTTP_ERROR,
@@ -65,7 +69,8 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
     try:
         content = parse_html(html=response.text)
     except Exception as e:
-        logger.error(f"解析错误:{url}, code:{response.status_code}, err:{str(e)}")
+        if verbose:
+            logger.error(f"解析错误:{url}, code:{response.status_code}, err:{str(e)}")
         return PageResult(
             url=url,
             status=FetchStatus.PARSE_ERROR,
@@ -74,7 +79,8 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
             error=f"parse_error:{str(e)}",
         )
 
-    logger.success(f"解析OK，url:{url} 耗时:{time.perf_counter()-start:.2f}")
+    if verbose:
+        logger.success(f"解析OK，url:{url} 耗时:{time.perf_counter() - start:.2f}")
     return PageResult(
         url=url,
         status=FetchStatus.OK,
@@ -127,11 +133,25 @@ async def fetch_many_process(
     urls: Sequence[str],
     concrurrency: int = 5,
     timeout: float = 15,
+    verbose: bool = False,
     on_progress: Callable[[PageResult], None] | None = None,
 ) -> list[PageResult]:
     """
-    批量并发抓取 URL。
-    用 Semaphore 限流,用 as_completed 管理生命周期。
+    批量并发抓取 URL
+
+    Args:
+        urls: 要抓取的 URL 列表
+        concurrency: 最大并发数,默认 5
+        timeout: 单次请求超时(秒),默认 15
+        verbose: 是否显示详细日志
+        on_progress: 可选回调,每完成一个 URL 调用一次
+
+    Returns:
+        按完成顺序的 PageResult 列表(注意:不是输入顺序)
+
+    Note:
+        函数本身不抛网络异常——所有失败都体现在 PageResult.status
+        用 Semaphore 限流,用 as_completed 管理生命周期。
     """
     # 连接池配置
     timeout = httpx.Timeout(connect=5, read=timeout, write=30, pool=60)
@@ -143,15 +163,18 @@ async def fetch_many_process(
     semaphore = asyncio.Semaphore(concrurrency)
 
     # async with 异步上下文 管理信号量并发数
-    async def _bounded_fetch(client: httpx.AsyncClient, url: str) -> PageResult:
+    async def _bounded_fetch(client: httpx.AsyncClient, url: str, verbose: bool) -> PageResult:
         """所有任务通过信号量 控制并发数"""
         async with semaphore:
-            return await fetch_one(client=client, url=url)
+            return await fetch_one(client=client, url=url, verbose=verbose)
 
     # async with 异步上下文 管理请求连接池
     async with httpx.AsyncClient(timeout=timeout, limits=limit, headers=headers) as client:
         # as_completed，并发执行任务，执行结果一个一个返回
-        tasks = [asyncio.create_task(_bounded_fetch(client=client, url=url)) for url in urls]
+        tasks = [
+            asyncio.create_task(_bounded_fetch(client=client, url=url, verbose=verbose))
+            for url in urls
+        ]
         results: list[PageResult] = []
         for task in asyncio.as_completed(tasks):
             result = await task

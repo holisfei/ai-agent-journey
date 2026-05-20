@@ -25,6 +25,7 @@ def fetch(
     timeout: Annotated[float, typer.Option("--timeout", "-t", help="超时(秒)")] = 15.0,
     output: Annotated[str, typer.Option("--output", "-o", help="输出文件")] = Path("result.json"),
     verbose: Annotated[bool, typer.Option("--verbose", "-v", help="详细日志")] = False,
+    quiet: Annotated[bool, typer.Option("--quiet", "-q", help="只输出 JSON 路径")] = False,
 ):
     """批量异步抓取 URL,提取标题/描述/链接等"""
 
@@ -42,14 +43,14 @@ def fetch(
         console.print("请使用: mycrawler fetch URL1 URL2 ... 或者 --file 文件")
         raise typer.Exit(code=1)
 
-    console.print(
-        f"[bold]任务执行中... 数量:{len(url_list)} Urls[/bold] (并发:{concurrency},超时:{timeout})"
-    )
+    console.print(f"[bold]开始任务 数量:{len(url_list)}[/bold] (并发:{concurrency},超时:{timeout})")
 
     # 2. 跑爬虫 + 显示进度
     start = datetime.now()
     results = asyncio.run(
-        _run_with_progress(urls=url_list, concrurrency=concurrency, timeout=timeout)
+        _run_with_progress(
+            urls=url_list, concrurrency=concurrency, timeout=timeout, verbose=verbose
+        )
     )
     elapsed = (datetime.now() - start).total_seconds()
 
@@ -58,11 +59,15 @@ def fetch(
 
     # 4. 将解析的结果写入文件
     _write_to_file(results=results, output=Path(output), elapsed=elapsed)
-    console.print(f"\n💾 保存到了[cyan]{output}[/cyan]")
+    console.print(f"\n💾 结果保存到了[cyan]{output}[/cyan]")
+
+    # 5. 输出
+    if not quiet:
+        _print_failed_urls(results)
 
 
 # 任务进度
-async def _run_with_progress(urls, concrurrency, timeout) -> list[PageResult]:
+async def _run_with_progress(urls, concrurrency, timeout, verbose) -> list[PageResult]:
     """跑爬虫,用 rich.Progress 显示进度"""
     with Progress(
         SpinnerColumn(),  # loading
@@ -77,14 +82,18 @@ async def _run_with_progress(urls, concrurrency, timeout) -> list[PageResult]:
         console=console,
     ) as process:
         # 生成总任务 task_id
-        task_id = process.add_task("任务执行中...", total=len(urls))
+        task_id = process.add_task("当前进度", total=len(urls))
 
         # 更新子任务的回调实现
         def on_progress(_: PageResult) -> None:
             process.update(task_id=task_id, advance=1)
 
         return await fetch_many_process(
-            urls=urls, concrurrency=concrurrency, timeout=timeout, on_progress=on_progress
+            urls=urls,
+            concrurrency=concrurrency,
+            timeout=timeout,
+            verbose=verbose,
+            on_progress=on_progress,
         )
 
 
@@ -102,14 +111,14 @@ def _print_summary(results: list[PageResult], elapsed: float) -> None:
         avg_ms = 0
 
     # 创建表格
-    table = Table(title="摘要", show_header=True)
+    table = Table(title="结果摘要", show_header=True)
     # 2列
     table.add_column("指标", style="dim")
     table.add_column("值", justify="right")
     # 每一行的内容
     table.add_row("总计", str(total))
     table.add_row(
-        "[green]成功[/green]", f"{ok_count} ({ok_count/total*100:.0f}%)" if total else "0"
+        "[green]成功[/green]", f"{ok_count} ({ok_count / total * 100:.0f}%)" if total else "0"
     )
     table.add_row("[yellow]HTTP错误[/yellow]", str(stats.get(FetchStatus.HTTP_ERROR, 0)))
     table.add_row("[yellow]超时[/yellow]", str(stats.get(FetchStatus.TIMEOUT, 0)))
@@ -133,6 +142,20 @@ def _write_to_file(results: list[PageResult], output: Path, elapsed: float) -> N
         "results": [m.model_dump(mode="json") for m in results],
     }
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _print_failed_urls(results: list[PageResult]) -> None:
+    """如果有失败的 URL,单独列出来"""
+    failed = [r for r in results if r.status != FetchStatus.OK]
+    if not failed:
+        return
+
+    console.print()
+    console.print(f"[yellow]失败的URLs ({len(failed)}):[/yellow]")
+    for r in failed:
+        console.print(f"  [{r.status.value:>14}] {r.url}")
+        if r.error:
+            console.print(f"  {' ' * 18} [dim]{r.error}[/dim]")
 
 
 @app.command()

@@ -1,8 +1,8 @@
 {
   "metadata": {
     "total": 9,
-    "elapsed_seconds": 6,
-    "generated_at": "2026-05-20T15:17:25.048225"
+    "elapsed_seconds": 8,
+    "generated_at": "2026-05-20T16:30:15.319582"
   },
   "results": [
     {
@@ -10,8 +10,8 @@
       "status": "ok",
       "http_code": 200,
       "error": null,
-      "elapsed_ms": 0.9675675419857726,
-      "fetched_at": "2026-05-20T15:17:20.298437",
+      "elapsed_ms": 1.0319435420096852,
+      "fetched_at": "2026-05-20T16:30:08.713948",
       "content": {
         "title": "Example Domain",
         "description": null,
@@ -28,12 +28,27 @@
       }
     },
     {
+      "url": "https://httpbin.org/delay/1",
+      "status": "ok",
+      "http_code": 200,
+      "error": null,
+      "elapsed_ms": 2.899296499963384,
+      "fetched_at": "2026-05-20T16:30:10.586288",
+      "content": {
+        "title": null,
+        "description": null,
+        "headings": [],
+        "links": [],
+        "text_length": 381
+      }
+    },
+    {
       "url": "https://httpbin.org/html",
       "status": "ok",
       "http_code": 200,
       "error": null,
-      "elapsed_ms": 2.5365511670242995,
-      "fetched_at": "2026-05-20T15:17:21.872217",
+      "elapsed_ms": 3.1422569589922205,
+      "fetched_at": "2026-05-20T16:30:10.829050",
       "content": {
         "title": null,
         "description": null,
@@ -45,36 +60,12 @@
       }
     },
     {
-      "url": "https://httpbin.org/delay/1",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 3.0530466249911115,
-      "fetched_at": "2026-05-20T15:17:22.388905",
-      "content": {
-        "title": null,
-        "description": null,
-        "headings": [],
-        "links": [],
-        "text_length": 381
-      }
-    },
-    {
       "url": "https://this-domain-not-exist-xyz123.com",
       "status": "network_error",
       "http_code": null,
       "error": "connect_error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1032)",
-      "elapsed_ms": 0.5593192090163939,
-      "fetched_at": "2026-05-20T15:17:22.431627",
-      "content": null
-    },
-    {
-      "url": "https://httpbin.org/status/404",
-      "status": "http_error",
-      "http_code": 404,
-      "error": "code_error 404",
-      "elapsed_ms": 2.3145094579667784,
-      "fetched_at": "2026-05-20T15:17:22.613063",
+      "elapsed_ms": 0.5287227919907309,
+      "fetched_at": "2026-05-20T16:30:11.115114",
       "content": null
     },
     {
@@ -82,8 +73,8 @@
       "status": "ok",
       "http_code": 200,
       "error": null,
-      "elapsed_ms": 0.7221162079949863,
-      "fetched_at": "2026-05-20T15:17:23.153837",
+      "elapsed_ms": 1.0472200000076555,
+      "fetched_at": "2026-05-20T16:30:12.162472",
       "content": {
         "title": "Example Domain",
         "description": null,
@@ -100,12 +91,45 @@
       }
     },
     {
+      "url": "https://httpbin.org/status/404",
+      "status": "timeout",
+      "http_code": null,
+      "error": "timeout ",
+      "elapsed_ms": 5.009025625011418,
+      "fetched_at": "2026-05-20T16:30:13.723102",
+      "content": null
+    },
+    {
+      "url": "https://httpbin.org/status/500",
+      "status": "http_error",
+      "http_code": 500,
+      "error": "code_error 500",
+      "elapsed_ms": 1.7208372500026599,
+      "fetched_at": "2026-05-20T16:30:13.883429",
+      "content": null
+    },
+    {
+      "url": "https://httpbin.org/delay/2",
+      "status": "ok",
+      "http_code": 200,
+      "error": null,
+      "elapsed_ms": 3.4841953750001267,
+      "fetched_at": "2026-05-20T16:30:14.313308",
+      "content": {
+        "title": null,
+        "description": null,
+        "headings": [],
+        "links": [],
+        "text_length": 381
+      }
+    },
+    {
       "url": "https://www.baidu.com",
       "status": "ok",
       "http_code": 200,
       "error": null,
-      "elapsed_ms": 1.14099929202348,
-      "fetched_at": "2026-05-20T15:17:24.294884",
+      "elapsed_ms": 1.588605374970939,
+      "fetched_at": "2026-05-20T16:30:15.312100",
       "content": {
         "title": "百度一下，你就知道",
         "description": "全球领先的中文搜索引擎、致力于让网民更便捷地获取信息，找到所求。百度超过千亿的中文网页数据库，可以瞬间找到相关的搜索结果。",
@@ -225,30 +249,6 @@
           }
         ],
         "text_length": 2229
-      }
-    },
-    {
-      "url": "https://httpbin.org/status/500",
-      "status": "http_error",
-      "http_code": 500,
-      "error": "code_error 500",
-      "elapsed_ms": 1.870749292022083,
-      "fetched_at": "2026-05-20T15:17:24.484779",
-      "content": null
-    },
-    {
-      "url": "https://httpbin.org/delay/2",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 2.6518504160339944,
-      "fetched_at": "2026-05-20T15:17:25.040812",
-      "content": {
-        "title": null,
-        "description": null,
-        "headings": [],
-        "links": [],
-        "text_length": 381
       }
     }
   ]
