@@ -1,6 +1,6 @@
 import asyncio
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
 import httpx
 from loguru import logger
@@ -51,7 +51,7 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
     # 非200错误
     if response.status_code != 200:  # 4xx 5xx
         logger.warning(
-            f"code错误，f{url}, code:{response.status_code}, 耗时:{time.perf_counter()-start:.2f}"
+            f"code错误，{url}, code:{response.status_code}, 耗时:{time.perf_counter()-start:.2f}"
         )
         return PageResult(
             url=url,
@@ -84,7 +84,7 @@ async def fetch_one(client: httpx.AsyncClient, url: str) -> PageResult:
     )
 
 
-# 请求多个url的内容
+# 请求多个url的内容：syncio.TaskGroup() 管理，执行结果一次性返回
 
 
 async def fetch_many(
@@ -116,5 +116,47 @@ async def fetch_many(
             # 生成 协程任务 task
             tasks = [tg.create_task(_bounded_fetch(client=client, url=url)) for url in urls]
 
-    # 退出 TaskGroup 后,所有任务都完成了
+    # 退出 TaskGroup 后, 所有任务都完成了
     return [task.result() for task in tasks]
+
+
+# 请求多个url的内容：asyncio.as_completed()管理，带进度回调，请求结果一个一个返回
+
+
+async def fetch_many_process(
+    urls: Sequence[str],
+    concrurrency: int = 5,
+    timeout: float = 15,
+    on_progress: Callable[[PageResult], None] | None = None,
+) -> list[PageResult]:
+    """
+    批量并发抓取 URL。
+    用 Semaphore 限流,用 as_completed 管理生命周期。
+    """
+    # 连接池配置
+    timeout = httpx.Timeout(connect=5, read=timeout, write=30, pool=60)
+    limit = httpx.Limits(max_connections=concrurrency * 2, max_keepalive_connections=concrurrency)
+    headers = {
+        "Accept": "text/html,application/xhtml+xml",
+    }
+    # 信号量管理并发数量
+    semaphore = asyncio.Semaphore(concrurrency)
+
+    # async with 异步上下文 管理信号量并发数
+    async def _bounded_fetch(client: httpx.AsyncClient, url: str) -> PageResult:
+        """所有任务通过信号量 控制并发数"""
+        async with semaphore:
+            return await fetch_one(client=client, url=url)
+
+    # async with 异步上下文 管理请求连接池
+    async with httpx.AsyncClient(timeout=timeout, limits=limit, headers=headers) as client:
+        # as_completed，并发执行任务，执行结果一个一个返回
+        tasks = [asyncio.create_task(_bounded_fetch(client=client, url=url)) for url in urls]
+        results: list[PageResult] = []
+        for task in asyncio.as_completed(tasks):
+            result = await task
+            results.append(result)
+            # 每完成一个任务，回调出去，告诉外部当前的进度
+            if on_progress is not None:
+                on_progress(result)
+    return results

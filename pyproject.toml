@@ -9,6 +9,7 @@ dependencies = [
     "loguru>=0.7.3",
     "pydantic[email]>=2.13.4",
     "requests>=2.34.0",
+    "rich>=15.0.0",
     "ruff>=0.15.13",
     "typer>=0.25.1",
 ]
@@ -57,6 +58,7 @@ select = [
     "N",    # pep8-naming（命名规范）
     "UP",   # pyupgrade（升级老语法）
     "B",    # flake8-bugbear（常见 bug 检测）
+    "PLE",  # class 内方法缺 self
 ]
 ignore = []
 
@@ -72,7 +74,7 @@ asyncio_mode = "auto"           # 所有 async def 测试自动用 asyncio 跑
 # 测试覆盖率指定
 [tool.coverage.run]
 source = ["src/async_crawler"]         # 指定覆盖目录
-omit = ["*/tests/*", "*/_try*.py", "*/cli.py"]    # 排除测试文件本身和临时调试脚本
+omit = ["*/tests/*", "*/_try*.py"]    # 排除测试文件本身和临时调试脚本
 
 # 测试覆盖率报告
 [tool.coverage.report]

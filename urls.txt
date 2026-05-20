@@ -1,0 +1,9 @@
+https://example.com
+https://httpbin.org/html
+https://httpbin.org/delay/1
+https://httpbin.org/status/404
+https://this-domain-not-exist-xyz123.com
+https://httpbin.org/delay/2
+https://example.org
+https://httpbin.org/status/500
+https://www.baidu.com
