@@ -10,7 +10,7 @@ from async_crawler.parser import parse_html
 
 
 # 请求单个url的内容
-async def fetch_one(client: httpx.AsyncClient, url: str, verbose: bool) -> PageResult:
+async def fetch_one(client: httpx.AsyncClient, url: str, verbose: bool = False) -> PageResult:
     """
     抓单个 URL,并解析 HTML 为结构化内容。
     任何异常都被捕获,转换为带状态的 PageResult。
@@ -55,7 +55,7 @@ async def fetch_one(client: httpx.AsyncClient, url: str, verbose: bool) -> PageR
     if response.status_code != 200:  # 4xx 5xx
         if verbose:
             logger.warning(
-                f"code错误，{url}, code:{response.status_code}, 耗时:{time.perf_counter() - start:.2f}"
+                f"code错误{url},code:{response.status_code},耗时:{time.perf_counter() - start:.2f}"
             )
         return PageResult(
             url=url,
