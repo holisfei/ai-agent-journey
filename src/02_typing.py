@@ -45,7 +45,7 @@ get_first_item(data=["one", "two", "three"])
 
 
 # 泛型约束
-def add[T: (int | float)](p1: T, p2: T) -> T:
+def add[T = (int | float)](p1: T, p2: T) -> T:
     return p1 + p2
 
 

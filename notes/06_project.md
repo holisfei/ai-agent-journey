@@ -34,20 +34,43 @@ Ruff 是一个用 Rust 语言编写的 Python 代码检查工具。
 # 安装
 uv add --dev ruff
 
-# 格式化整个项目（会修改文件）
-uv run ruff format .
-
-# 只检查不修改
+# 代码是否已格式化: 只做检查，不修改
 uv run ruff format --check .
 
-# lint 检查
+# 代码格式化：格式化整个项目（会修改文件）
+uv run ruff format .
+
+# lint规范: 只做检查，不修改
 uv run ruff check .
 
-# lint 检查并自动修复能修的问题
+# lint规范: 检查并自动修复能修的问题（会修改文件）
 uv run ruff check --fix .
 ```
 
  Ruff有扩展工具（Astral 官方），会在保存文件时自动 format + 提示 lint 错误
+
+# mypy
+
+mypy 是 Python 的“静态类型检查工具”。
+
+简单来说，它就像是一个在代码运行前帮你“体检”的智能纠错员。它能在你不运行程序的情况下，提前帮你发现代码中因为类型写错而可能导致的 Bug。
+
+- 提前发现 Bug：不用等程序崩溃，在写代码或提交代码时就能拦截 80% 的类型错误（比如把字符串传给了需要整数的函数）。
+- 让代码自带“说明书”：看到 def greet(name: str) -> str:，任何人一眼就能看懂这个函数需要传字符串，也会返回字符串，极大降低了阅读和接手代码的难度。
+- 提升 IDE 的智能提示：当你的编辑器（比如 VS Code 或 PyCharm）知道变量的具体类型后，自动补全和跳转功能会变得极其精准。
+
+使用：````uv run mypy src/```
+
+### 和ruff的区别
+
+| 特性 | mypy | ruff |
+| :--- | :--- | :--- |
+| 核心定位 | 静态类型检查器 | 代码检查器 (Linter) + 格式化工具 (Formatter) |
+| 主要作用 | 发现类型不匹配、参数传错等逻辑隐患 | 统一代码风格、自动格式化、发现未使用变量等 |
+| 运行速度 | 较慢（取决于项目复杂度） | 极快（毫秒级响应） |
+| 能否自动修复 | 不能（只能报错提示） | 能（大部分格式和规范问题可一键自动修复） |
+| 形象比喻 | 结构工程师（查内在隐患） | 装修监理（管外在整洁） |<websource>source_group_web_4</websource>
+
 
 # Pre-commit Hooks
 
@@ -156,7 +179,7 @@ uv run mycrawler --help
 uv run mycrawler fetch https://example.com -c 10
 ```
 
-# [project.scripts]
+# python包 [project.scripts]
 
 uv 把 Python 项目分成两类:
 - Application（应用）:自己跑的代码，不发布给别人用数据分析脚本、内部工具,不支持 project.scripts

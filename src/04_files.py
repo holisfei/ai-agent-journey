@@ -1,5 +1,6 @@
 import os
 import tempfile
+from pathlib import Path
 
 # 文件路径的生成
 DEMO_DIR = os.path.join(tempfile.gettempdir(), "com.python.learn", "04_files")  # 拼接出文件目录
@@ -54,18 +55,16 @@ with open(demo_file, encoding="utf-8") as fi:
     print(f"{fi.readline()}")
 
 #  python3 pathlib 新写法
-from pathlib import Path
-
 path_dir = Path(tempfile.gettempdir()) / "com.python.learn" / "04_files"
 path_dir.mkdir(parents=True, exist_ok=True)
-demo_file = path_dir / "demo.txt"
+demo_file: Path = path_dir / "demo.txt"
 print(f"新路径：{demo_file}")
 
 demo_file.write_text("hello pathlib", encoding="utf-8")  # 一行写文件
 content = demo_file.read_text(encoding="utf-8")  # 一行读文件
 print(f"{content}")
-demo_file.exists()  # 文件是否存在
-demo_file.suffix  # ".txt"
-demo_file.stem  # "demo"
-demo_file.parent  # 父目录
-list(path_dir.glob("*.txt"))  # 列出所有 .txt 文件
+print(demo_file.exists())  # 文件是否存在
+print(demo_file.suffix)  # ".txt"
+print(demo_file.stem)  # "demo"
+print(demo_file.parent)  # 父目录
+print(list(path_dir.glob("*.txt")))  # 列出所有 .txt 文件
