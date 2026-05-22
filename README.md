@@ -34,13 +34,13 @@ uv sync
 uv run mycrawler fetch https://example.com https://example.org
 
 # 从文件读 URL 列表
-uv run mycrawler fetch --from-file urls.txt -c 10
+uv run mycrawler fetch --file urls.txt -c 10
 
 # 自定义输出文件和超时
-uv run mycrawler fetch --from-file urls.txt -o data.json -t 30
+uv run mycrawler fetch --file urls.txt -o data.json -t 30
 
 # 安静模式(适合脚本调用)
-uv run mycrawler fetch --from-file urls.txt --quiet
+uv run mycrawler fetch --file urls.txt --quiet
 ```
 
 ### 示例输出

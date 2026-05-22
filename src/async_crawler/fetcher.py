@@ -7,6 +7,7 @@ from loguru import logger
 
 from async_crawler.models import FetchStatus, PageResult
 from async_crawler.parser import parse_html
+from async_crawler.robots import allow_fetch
 
 
 # 请求单个url的内容
@@ -21,6 +22,15 @@ async def fetch_one(client: httpx.AsyncClient, url: str, verbose: bool = False) 
     # 所以：这里使用了model去return一个错误的结果，相当于吃掉了raise抛异常这个逻辑
 
     start = time.perf_counter()
+
+    if not allow_fetch(url=url, user_agent="holisbot"):
+        return PageResult(
+            url=url,
+            status=FetchStatus.NOT_ALLOWED,
+            elapsed_ms=time.perf_counter() - start,
+            error="not_allowed",
+        )
+
     try:
         response = await client.get(url=url, follow_redirects=True)
     except httpx.TimeoutException as e:  # 超时错误，

@@ -38,6 +38,7 @@ class FetchStatus(str, Enum):  # 枚举，和 Pydantic 兼容
     TIMEOUT = "timeout"
     NETWORK_ERROR = "network_error"  # DNS 失败、连接断开等
     PARSE_ERROR = "parse_error"
+    NOT_ALLOWED = "not_allowed" # 禁止爬取
 
 
 class PageResult(BaseModel):  # 所有可能失败的字段都是None

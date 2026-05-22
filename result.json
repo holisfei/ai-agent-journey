@@ -1,255 +1,96 @@
 {
   "metadata": {
     "total": 9,
-    "elapsed_seconds": 6,
-    "generated_at": "2026-05-20T21:28:16.450040"
+    "elapsed_seconds": 35,
+    "generated_at": "2026-05-21T15:04:03.449769"
   },
   "results": [
-    {
-      "url": "https://httpbin.org/html",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 2.0995519169955514,
-      "fetched_at": "2026-05-20T21:28:12.459737",
-      "content": {
-        "title": null,
-        "description": null,
-        "headings": [
-          "Herman Melville - Moby-Dick"
-        ],
-        "links": [],
-        "text_length": 3621
-      }
-    },
-    {
-      "url": "https://httpbin.org/status/404",
-      "status": "http_error",
-      "http_code": 404,
-      "error": "code_error 404",
-      "elapsed_ms": 0.471142458030954,
-      "fetched_at": "2026-05-20T21:28:12.930997",
-      "content": null
-    },
-    {
-      "url": "https://example.com",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 2.607282041979488,
-      "fetched_at": "2026-05-20T21:28:12.964333",
-      "content": {
-        "title": "Example Domain",
-        "description": null,
-        "headings": [
-          "Example Domain"
-        ],
-        "links": [
-          {
-            "url": "https://iana.org/domains/example",
-            "text": "Learn more"
-          }
-        ],
-        "text_length": 125
-      }
-    },
     {
       "url": "https://this-domain-not-exist-xyz123.com",
       "status": "network_error",
       "http_code": null,
       "error": "connect_error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1032)",
-      "elapsed_ms": 0.5883303749724291,
-      "fetched_at": "2026-05-20T21:28:13.519461",
+      "elapsed_ms": 0.9447022919775918,
+      "fetched_at": "2026-05-21T15:03:44.613183",
+      "content": null
+    },
+    {
+      "url": "https://httpbin.org/html",
+      "status": "timeout",
+      "http_code": null,
+      "error": "timeout ",
+      "elapsed_ms": 25.075694208964705,
+      "fetched_at": "2026-05-21T15:03:54.698974",
+      "content": null
+    },
+    {
+      "url": "https://example.com",
+      "status": "timeout",
+      "http_code": null,
+      "error": "timeout ",
+      "elapsed_ms": 25.79571129195392,
+      "fetched_at": "2026-05-21T15:03:54.699258",
       "content": null
     },
     {
       "url": "https://httpbin.org/delay/1",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 3.898505542019848,
-      "fetched_at": "2026-05-20T21:28:14.258902",
-      "content": {
-        "title": null,
-        "description": null,
-        "headings": [],
-        "links": [],
-        "text_length": 381
-      }
+      "status": "timeout",
+      "http_code": null,
+      "error": "timeout ",
+      "elapsed_ms": 23.067892082966864,
+      "fetched_at": "2026-05-21T15:03:54.699463",
+      "content": null
+    },
+    {
+      "url": "https://httpbin.org/status/404",
+      "status": "timeout",
+      "http_code": null,
+      "error": "timeout ",
+      "elapsed_ms": 13.03881558298599,
+      "fetched_at": "2026-05-21T15:03:54.699628",
+      "content": null
     },
     {
       "url": "https://example.org",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 0.9778224169858731,
-      "fetched_at": "2026-05-20T21:28:14.497592",
-      "content": {
-        "title": "Example Domain",
-        "description": null,
-        "headings": [
-          "Example Domain"
-        ],
-        "links": [
-          {
-            "url": "https://iana.org/domains/example",
-            "text": "Learn more"
-          }
-        ],
-        "text_length": 125
-      }
+      "status": "not_allowed",
+      "http_code": null,
+      "error": "not_allowed",
+      "elapsed_ms": 0.8744058749871328,
+      "fetched_at": "2026-05-21T15:03:55.574174",
+      "content": null
     },
     {
       "url": "https://www.baidu.com",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 1.1466087080189027,
-      "fetched_at": "2026-05-20T21:28:15.644260",
-      "content": {
-        "title": "百度一下，你就知道",
-        "description": "全球领先的中文搜索引擎、致力于让网民更便捷地获取信息，找到所求。百度超过千亿的中文网页数据库，可以瞬间找到相关的搜索结果。",
-        "headings": [],
-        "links": [
-          {
-            "url": "//news.baidu.com/",
-            "text": "新闻"
-          },
-          {
-            "url": "//www.hao123.com/",
-            "text": "hao123"
-          },
-          {
-            "url": "//map.baidu.com/",
-            "text": "地图"
-          },
-          {
-            "url": "//live.baidu.com/",
-            "text": "直播"
-          },
-          {
-            "url": "//haokan.baidu.com/?sfrom=baidu-top",
-            "text": "视频"
-          },
-          {
-            "url": "//tieba.baidu.com/",
-            "text": "贴吧"
-          },
-          {
-            "url": "//xueshu.baidu.com/",
-            "text": "学术"
-          },
-          {
-            "url": "//www.baidu.com/more/",
-            "text": "更多"
-          },
-          {
-            "url": "//www.baidu.com/bdorz/login.gif?login&tpl=mn&u=http%3A%2F%2Fwww.baidu.com%2f%3fbdorz_come%3d1",
-            "text": "登录"
-          },
-          {
-            "url": "//www.baidu.com/",
-            "text": ""
-          },
-          {
-            "url": "https://top.baidu.com/board?platform=pc&sa=pcindex_entry",
-            "text": "\n                                    "
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E6%80%BB%E4%B9%A6%E8%AE%B0%E7%9A%84%E4%B8%80%E5%91%A8&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "0总书记的一周"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E5%BE%AE%E4%BF%A1%E6%96%B0%E5%8A%9F%E8%83%BD%E4%B8%8A%E7%BA%BF+%E5%8F%AF%E4%B8%80%E9%94%AE%E5%88%A0%E9%99%A4%E5%8D%95%E5%90%91%E5%A5%BD%E5%8F%8B&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "5微信新功能上线 可一键删除单向好友"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E4%B9%A0%E8%BF%91%E5%B9%B3%E5%87%BA%E5%B8%AD%E6%B0%91%E8%90%A5%E4%BC%81%E4%B8%9A%E5%BA%A7%E8%B0%88%E4%BC%9A%E5%B9%B6%E8%AE%B2%E8%AF%9D&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "1习近平出席民营企业座谈会并讲话"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E8%BF%99%E4%B8%8B%E9%81%87%E5%88%B0%E7%9C%9F%E7%9F%B3%E7%9F%B6%E5%A8%98%E5%A8%98%E4%BA%86&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "6这下遇到真石矶娘娘了"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E3%80%8A%E5%93%AA%E5%90%922%E3%80%8B%E8%B6%85%E3%80%8A%E7%8B%AE%E5%AD%90%E7%8E%8B%E3%80%8B%E8%BF%9B%E5%85%A8%E7%90%83%E7%A5%A8%E6%88%BF%E5%89%8D10&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "2《哪吒2》超《狮子王》进全球票房前10"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E4%BA%8E%E6%AD%A3%E5%8F%91%E9%95%BF%E6%96%87%E8%87%B4%E6%AD%89&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "7于正发长文致歉"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E2%80%9C%E6%9D%91%E8%B6%85%E2%80%9D%E6%8C%81%E7%BB%AD%E5%8A%A9%E6%8E%A8%E4%B9%A1%E6%9D%91%E6%8C%AF%E5%85%B4&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "3“村超”持续助推乡村振兴"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E5%B0%BC%E6%A0%BC%E4%B9%B0%E6%8F%90%EF%BC%9A%E5%88%AB%E6%89%BE%E4%BA%86%E7%BB%93%E7%95%8C%E5%85%BD%E5%9C%A8%E7%A6%BE%E6%9C%A8&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "8尼格买提：别找了结界兽在禾木"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E3%80%8A%E5%93%AA%E5%90%922%E3%80%8B%E6%80%BB%E7%A5%A8%E6%88%BF%E7%AA%81%E7%A0%B4120%E4%BA%BF&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "4《哪吒2》总票房突破120亿"
-          },
-          {
-            "url": "https://www.baidu.com/s?wd=%E5%A4%A7%E5%AD%A6%E7%94%9F60%E7%B1%B3%E6%A0%8F%E8%B7%91%E5%87%BA7.53%E9%85%B7%E4%BC%BC%E5%88%98%E7%BF%94&sa=ipc_home_hotword_jt&rsv_dl=ipc_home_hotword_jt&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1",
-            "text": "9大学生60米栏跑出7.53酷似刘翔"
-          },
-          {
-            "url": "//home.baidu.com/",
-            "text": "关于百度"
-          },
-          {
-            "url": "//ir.baidu.com/",
-            "text": "About Baidu"
-          },
-          {
-            "url": "//www.baidu.com/duty",
-            "text": "使用百度前必读"
-          },
-          {
-            "url": "//help.baidu.com/",
-            "text": "帮助中心"
-          },
-          {
-            "url": "//www.beian.gov.cn/portal/registerSystemInfo?recordcode=11000002000001",
-            "text": "京公网安备11000002000001号"
-          },
-          {
-            "url": "//beian.miit.gov.cn/",
-            "text": "京ICP证030173号"
-          },
-          {
-            "url": "//www.baidu.com/licence/",
-            "text": "信息网络传播视听节目许可证 0110516"
-          }
-        ],
-        "text_length": 2229
-      }
-    },
-    {
-      "url": "https://httpbin.org/delay/2",
-      "status": "ok",
-      "http_code": 200,
-      "error": null,
-      "elapsed_ms": 2.8707854590029456,
-      "fetched_at": "2026-05-20T21:28:15.835203",
-      "content": {
-        "title": null,
-        "description": null,
-        "headings": [],
-        "links": [],
-        "text_length": 381
-      }
+      "status": "not_allowed",
+      "http_code": null,
+      "error": "not_allowed",
+      "elapsed_ms": 1.1241355000529438,
+      "fetched_at": "2026-05-21T15:03:58.553653",
+      "content": null
     },
     {
       "url": "https://httpbin.org/status/500",
       "status": "http_error",
       "http_code": 500,
       "error": "code_error 500",
-      "elapsed_ms": 2.184029125026427,
-      "fetched_at": "2026-05-20T21:28:16.443149",
+      "elapsed_ms": 4.851011791964993,
+      "fetched_at": "2026-05-21T15:04:00.425441",
       "content": null
+    },
+    {
+      "url": "https://httpbin.org/delay/2",
+      "status": "ok",
+      "http_code": 200,
+      "error": null,
+      "elapsed_ms": 18.829976959037594,
+      "fetched_at": "2026-05-21T15:04:03.443293",
+      "content": {
+        "title": null,
+        "description": null,
+        "headings": [],
+        "links": [],
+        "text_length": 381
+      }
     }
   ]
 }
