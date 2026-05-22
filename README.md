@@ -3,6 +3,7 @@
 > 基于 Python asyncio + httpx 的异步并发爬虫 CLI 工具。
 > 演示项目,展示现代 Python 工程实践:类型注解、Pydantic、asyncio、Typer、pytest。
 
+[![CI](https://github.com/holisfei/async-crawler/actions/workflows/ci.yml/badge.svg)](https://github.com/holisfei/async-crawler/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/)
 [![Tests](https://img.shields.io/badge/tests-passing-green.svg)]()
 [![Coverage](https://img.shields.io/badge/coverage-85%25-green.svg)]()
