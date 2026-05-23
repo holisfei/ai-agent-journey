@@ -48,14 +48,14 @@ with suppress(FileNotFoundError):
     os.remove("maybe_exists.txt")
 ```
 
-# 下文管理器 contextmanager
+# 自定义实现下文管理器
 - 方法 1：类 + __enter__/__exit__
     - __enter__(self) 返回了实例，as后的别名就是这里返回的实例
     - __exit__(self, exc_type, exc_val, exc_tb)始终都会被执行
 - 方法 2：@contextmanager 装饰器（推荐）
 - 关键点：异常处理、返回值绑定
 
-自定义实现contextmanager：
+自定义实现上下文管理器 contextmanager：
 
 ```python
 # 自定义额上下文管理器 context manager
@@ -112,13 +112,14 @@ with(
     print(c_f.read())
 ```
 
-# 异步上下文管理器
+# 异步上下文管理器 @asynccontextmanager
 
 ```async with、@asynccontextmanager```
 
 ```python
 from contextlib import asynccontextmanager
 
+# 定义
 @asynccontextmanager
 async def async_timer(name: str):
     start = time.perf_counter()
@@ -127,13 +128,13 @@ async def async_timer(name: str):
     finally:
         print(f"[{name}] took {time.perf_counter() - start:.3f}s")
 
-# 用
+# 使用
 async def main():
     async with async_timer("api_call"):
         await some_async_call()
 ```
 
-# 实战示例
+# 示例
 - timer 计时器
 - LLM 调用上下文
 @contextmanager 装饰器 实现：

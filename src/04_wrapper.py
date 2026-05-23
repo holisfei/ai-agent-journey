@@ -65,7 +65,9 @@ print(res)
 # 系统装饰器
 
 
-### @property
+# @property - 计算属性
+
+
 class Circle:
     def __init__(self, r: float):
         self.r = r
@@ -79,48 +81,57 @@ c = Circle(5)
 print(c.area)  # 像访问属性一样，不用加 ()
 
 
-### @classmethod @staticmethod
+# @classmethod - 类方法   @staticmethod - 静态方法
+
+
 class User:
     count = 0
 
-    @classmethod
-    def get_count(cls) -> int:  # 接收类本身
+    def __init__(self):
+        self.name = "name"
+
+    @classmethod # 接收类本身，只能访问类型属性count
+    def get_count(cls) -> int:
         return cls.count
 
-    @staticmethod
-    def validate_email(email: str) -> bool:  # 不接收 self/cls
+    @staticmethod # 不接收 self实例 和 cls类，不能访问任何实例属性和类型属性
+    def validate_email(email: str) -> bool:
         return "@" in email
 
 
-### @functools.lru_cache —— 自动缓存
+# @functools.lru_cache —— 函数 自动缓存
+
+
 from functools import lru_cache
 
-
-@lru_cache(maxsize=128)
+@lru_cache(maxsize=128) # 用于函数
 def expensive_call(x: int) -> int:
     print(f"computing {x}")
     return x**2
 
-
 expensive_call(5)  # computing 5
 expensive_call(5)  # 不打印，直接返回缓存值
 
-### @functools.cached_property —— 实例级缓存属性
+
+# @functools.cached_property —— 实例级缓存属性
+
+
 from functools import cached_property
 
-
-def expensive_parse(raw: str) -> str:  # 解析逻辑
+def expensive_parse(raw: str) -> str:  # 解析耗时逻辑
     return ""
-
 
 class Document:
     def __init__(self, raw: str):
-        self.raw = raw
+        self.raw = raw # 假设这是很庞大的原始数据
 
-    @cached_property
+    @cached_property # 用于对象实例
     def parsed_content(self) -> dict:
         # 第一次访问时计算并缓存
         return expensive_parse(raw=self.raw)
 
+doc = Document("非常庞大的数据")
+print(doc.parsed_content)  # 第一次访问：打印提示并等待1秒，输出计算结果
+print(doc.parsed_content)  # 第二次访问：瞬间输出结果（直接从实例内存读取，不再计算）
 
 ### Pydantic 的 @field_validator、@model_validator
